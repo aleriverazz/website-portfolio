@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Alejandra Rivera Zamacona — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;1,400;1,600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:     #0d0d0d;
+  --ink:    #e8e4de;
+  --dim:    #4e4a46;
+  --dim2:   #7a7074;
+  --rule:   rgba(255, 255, 255, 0.07);
+  --accent: #c8c0b4;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body:    'DM Mono', 'Courier New', monospace;
+  --font-prose:   'Lora', Georgia, serif;
+  --c1:#4a6a7a; --c2:#6a5a7a; --c3:#4a6a5a; --cf:#7a5a4a;
+  --cr:200; --cg:192; --cb:180;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden}
+body{
+  font-family:var(--font-body);font-weight:300;
+  background:var(--bg);color:var(--ink);
+  cursor:none;user-select:none;-webkit-user-select:none;
+}
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:radial-gradient(circle,rgba(255,255,255,.08) 1px,transparent 1px);
+  background-size:26px 26px;
+}
+body::after{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+  opacity:.65;
+}
+
+#CUR,#CRING{position:fixed;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);}
+#CUR{width:8px;height:8px;background:rgba(var(--cr),var(--cg),var(--cb),1);transition:width .12s,height .12s;}
+#CRING{width:30px;height:30px;border:1px solid rgba(var(--cr),var(--cg),var(--cb),.35);background:transparent;transition:width .14s,height .14s,border-color .3s;}
+#CVIEW{position:fixed;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);font-family:var(--font-body);font-size:7px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink);opacity:0;transition:opacity .18s;white-space:nowrap;margin-top:28px;}
+body.cHOVER #CUR{width:5px;height:5px}
+body.cHOVER #CRING{width:44px;height:44px;border-color:rgba(var(--cr),var(--cg),var(--cb),.65)}
+body.cHOVER #CVIEW{opacity:1}
+body.cDRAW #CUR{width:var(--brush-cur,12px);height:var(--brush-cur,12px);background:rgba(255,255,255,.9);}
+body.cDRAW #CRING{opacity:0}
+
+.SCREEN{position:fixed;inset:0;z-index:100;opacity:0;pointer-events:none;transition:opacity .6s cubic-bezier(.4,0,.2,1);}
+.SCREEN.ACTIVE{opacity:1;pointer-events:all}
+
+#FOOTER{
+  position:fixed;bottom:0;left:0;right:0;z-index:900;height:28px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-body);font-size:7px;letter-spacing:.26em;text-transform:uppercase;
+  color:var(--dim2);border-top:1px solid var(--rule);
+  background:rgba(8,8,8,.95);backdrop-filter:blur(12px);pointer-events:none;
+}
+body.on-home #FOOTER{color:rgba(255,255,255,.18);border-top-color:rgba(255,255,255,.04);background:rgba(0,0,0,.4);}
+
+/* HOME */
+#S-HOME{background:#060606;z-index:200}
+#S-HOME .splash-img{
+  position:absolute;inset:0;
+  background:url('./images/PORTADA.jpg') center/cover no-repeat;
+  opacity:.92;transition:opacity .6s,transform 8s cubic-bezier(.05,.88,.22,1);
+}
+#S-HOME.ACTIVE .splash-img{transform:scale(1.03)}
+#S-HOME .splash-hint{
+  position:absolute;bottom:56px;left:50%;transform:translateX(-50%);
+  font-family:var(--font-body);font-size:7px;letter-spacing:.34em;text-transform:uppercase;
+  color:rgba(255,255,255,.3);animation:blink 2.6s ease-in-out infinite;
+}
+@keyframes blink{0%,100%{opacity:.3}50%{opacity:.07}}
+
+/* MENU */
+#S-MENU{background:var(--bg);z-index:150}
+#MENU-BG{position:absolute;inset:0;background:url('./images/MAZE.jpg') center/cover no-repeat;pointer-events:none;z-index:0;}
+#DRAW-CANVAS{position:absolute;top:52px;left:0;right:0;bottom:28px;z-index:2;}
+#TOPBAR{
+  position:fixed;top:0;left:0;right:0;z-index:800;height:52px;
+  display:flex;align-items:center;justify-content:space-between;padding:0 24px;
+  background:rgba(8,8,8,.95);border-bottom:1px solid var(--rule);backdrop-filter:blur(20px);
+}
+#SITENAME{
+  font-family:var(--font-display);font-style:italic;font-weight:300;font-size:19px;
+  color:var(--ink);letter-spacing:.03em;cursor:none;background:none;border:none;padding:0;transition:color .22s;
+}
+#SITENAME:hover{color:rgb(255,10,202);}
+#TOPNAV{display:flex;align-items:center;gap:6px}
+.np{
+  font-family:var(--font-body);font-size:8px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--dim2);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);
+  border-radius:999px;padding:7px 16px;cursor:none;white-space:nowrap;
+  transition:background .2s,color .2s,border-color .2s,transform .14s;
+}
+.np:hover{background:rgba(255,255,255,.1);color:var(--ink);border-color:rgba(255,255,255,.25);transform:translateY(-1px)}
+.np.ON{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+#DRAW-TOOLBAR{position:fixed;bottom:40px;left:24px;z-index:810;display:flex;align-items:center;gap:10px;}
+.brush-btn{
+  font-family:var(--font-body);font-size:7px;letter-spacing:.18em;text-transform:uppercase;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);
+  color:var(--dim2);border-radius:999px;padding:6px 13px;cursor:none;
+  transition:background .2s,color .2s,border-color .2s;
+}
+.brush-btn:hover,.brush-btn.ON{background:rgba(255,255,255,.14);color:var(--ink);border-color:rgba(255,255,255,.3);}
+#BTN-CLEAR{
+  font-family:var(--font-body);font-size:7px;letter-spacing:.18em;text-transform:uppercase;
+  background:rgba(255,50,50,.08);border:1px solid rgba(255,100,100,.18);
+  color:rgba(255,160,160,.6);border-radius:999px;padding:6px 13px;cursor:none;
+  transition:background .2s,color .2s,border-color .2s;
+}
+#BTN-CLEAR:hover{background:rgba(255,50,50,.18);color:rgba(255,180,180,.9);border-color:rgba(255,100,100,.4);}
+.brush-dot{border-radius:50%;background:rgba(255,255,255,.5);flex-shrink:0;transition:width .15s,height .15s;}
+
+/* SHARED */
+.pg-header{
+  position:fixed;top:0;left:0;right:0;z-index:800;height:52px;
+  display:flex;align-items:center;justify-content:space-between;padding:0 36px;
+  background:rgba(8,8,8,.95);border-bottom:1px solid var(--rule);backdrop-filter:blur(20px);
+}
+.pg-header h1{font-family:var(--font-display);font-style:italic;font-weight:300;font-size:19px;color:var(--ink);}
+.back-btn{
+  font-family:var(--font-body);font-size:7px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--dim2);background:none;border:1px solid rgba(255,255,255,.1);
+  border-radius:999px;padding:6px 14px;cursor:none;
+  transition:background .2s,color .2s,border-color .2s;
+}
+.back-btn:hover{background:rgba(255,255,255,.08);color:var(--ink);border-color:rgba(255,255,255,.24);}
+.pg-scroll{position:fixed;inset:0;top:52px;bottom:28px;overflow-y:auto;overflow-x:hidden;padding:36px 36px 48px;}
+.pg-scroll::-webkit-scrollbar{width:2px}
+.pg-scroll::-webkit-scrollbar-thumb{background:var(--dim);border-radius:2px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1100px;margin:0 auto;}
+.grid-card{
+  background:rgba(18,17,15,.88);border:1px solid rgba(255,255,255,.07);
+  border-radius:3px;overflow:hidden;cursor:none;
+  transition:transform .28s,box-shadow .28s,border-color .28s;
+  box-shadow:0 2px 10px rgba(0,0,0,.45),0 6px 22px rgba(0,0,0,.22);
+}
+.grid-card:hover{transform:translateY(-4px);box-shadow:0 10px 32px rgba(0,0,0,.65),0 20px 56px rgba(0,0,0,.32);border-color:rgba(255,255,255,.14);}
+.grid-card .card-img{width:100%;aspect-ratio:4/3;overflow:hidden;background:#111;}
+.grid-card .card-img img{width:100%;height:100%;object-fit:cover;filter:saturate(.45) brightness(.82);transition:transform .55s,filter .4s;display:block;pointer-events:none;}
+.grid-card:hover .card-img img{transform:scale(1.05);filter:saturate(.65) brightness(.95)}
+.grid-card .card-info{padding:14px 16px 18px}
+.grid-card .card-label{font-size:7px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);margin-bottom:5px;}
+.grid-card .card-title{font-family:var(--font-display);font-style:italic;font-size:19px;line-height:1.1;color:var(--ink);}
+
+#S-PORTFOLIO{background:var(--bg);display:flex;flex-direction:column;}
+#S-TATTOO{background:var(--bg);display:flex;flex-direction:column;}
+
+/* MDEF */
+#S-MDEF{background:var(--bg)}
+#S-MDEF .mdef-inner{position:fixed;inset:0;display:flex;flex-direction:column;}
+#S-MDEF .mdef-header{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 36px;border-bottom:1px solid var(--rule);background:rgba(8,8,8,.95);backdrop-filter:blur(20px);flex-shrink:0;}
+#S-MDEF .mdef-header h1{font-family:var(--font-display);font-style:italic;font-weight:300;font-size:19px;color:var(--ink);}
+#S-MDEF .mdef-body{flex:1;overflow-y:auto;padding:52px 40px 32px;}
+#S-MDEF .mdef-body::-webkit-scrollbar{width:2px}
+#S-MDEF .mdef-body::-webkit-scrollbar-thumb{background:var(--dim);border-radius:2px}
+#S-MDEF .mdef-desc{font-family:var(--font-prose);font-style:italic;font-size:16px;line-height:1.85;color:var(--dim2);max-width:520px;margin-bottom:44px;}
+#S-MDEF .mdef-terms{display:flex;gap:12px;flex-wrap:wrap;}
+.term-btn{
+  font-family:var(--font-body);font-size:8px;letter-spacing:.2em;text-transform:uppercase;
+  padding:11px 22px;border-radius:999px;cursor:none;
+  border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--dim2);
+  transition:background .22s,color .22s,transform .14s,border-color .22s;
+}
+.term-btn:hover{background:rgba(255,255,255,.1);color:var(--ink);border-color:rgba(255,255,255,.28);transform:translateY(-2px);}
+
+/* TERM */
+#S-TERM{background:var(--bg)}
+#S-TERM .pg-header h1{display:flex;align-items:center;gap:10px;}
+#S-TERM .term-color-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+
+/* DETAIL */
+#S-DETAIL{background:var(--bg)}
+.detail-inner{position:fixed;inset:0;display:flex;flex-direction:column;}
+.detail-header{height:52px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 36px;border-bottom:1px solid var(--rule);background:rgba(8,8,8,.95);backdrop-filter:blur(20px);}
+.detail-header h2{font-family:var(--font-display);font-style:italic;font-weight:300;font-size:19px;color:var(--ink);}
+.detail-body{flex:1;overflow-y:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 36px 28px;gap:16px;}
+.detail-name{font-family:var(--font-display);font-style:italic;font-weight:300;font-size:clamp(40px,6vw,76px);line-height:.92;color:var(--ink);text-align:center;}
+.detail-sub{font-size:7px;letter-spacing:.28em;text-transform:uppercase;color:var(--dim2);}
+
+/* CONTACT */
+#S-CONTACT{background:var(--bg)}
+.contact-inner{position:fixed;inset:0;display:flex;flex-direction:column;}
+.contact-header{height:52px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 36px;border-bottom:1px solid var(--rule);background:rgba(8,8,8,.95);backdrop-filter:blur(20px);}
+.contact-header h2{font-family:var(--font-display);font-style:italic;font-weight:300;font-size:19px;color:var(--ink);}
+.contact-body{flex:1;overflow-y:auto;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:48px max(40px,8vw) 48px;gap:0;}
+.contact-title{font-family:var(--font-display);font-style:italic;font-weight:300;font-size:clamp(46px,7vw,84px);line-height:.91;color:var(--ink);margin-bottom:40px;}
+.ct-item{display:flex;align-items:center;gap:16px;padding:18px 0;border-bottom:1px solid var(--rule);width:100%;max-width:480px;cursor:none;transition:padding-left .22s;}
+.ct-item:hover{padding-left:8px}
+.ct-item:first-of-type{border-top:1px solid var(--rule)}
+.ct-item a{font-family:var(--font-display);font-size:21px;font-weight:300;color:var(--ink);text-decoration:none;cursor:none;transition:color .2s;}
+.ct-item:hover a{color:var(--accent)}
+.ct-item .ct-label{font-size:7px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);width:72px;flex-shrink:0;}
+.ct-arrow{margin-left:auto;font-size:15px;color:var(--dim);transition:transform .22s,color .22s;}
+.ct-item:hover .ct-arrow{transform:translateX(4px);color:var(--accent)}
+
+/* CV */
+#S-CV{background:var(--bg)}
+.cv-inner{position:fixed;inset:0;display:flex;flex-direction:column;}
+.cv-header{height:52px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 36px;border-bottom:1px solid var(--rule);background:rgba(8,8,8,.95);backdrop-filter:blur(20px);}
+.cv-header h2{font-family:var(--font-display);font-style:italic;font-weight:300;font-size:19px;color:var(--ink);}
+.cv-body{flex:1;overflow-y:auto;display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.cv-body::-webkit-scrollbar{width:2px}
+.cv-body::-webkit-scrollbar-thumb{background:var(--dim);border-radius:2px}
+.cv-left{padding:52px 48px 52px 52px;border-right:1px solid var(--rule);display:flex;flex-direction:column;gap:44px;}
+.cv-right{padding:52px 52px 52px 48px;display:flex;flex-direction:column;gap:44px;}
+.cv-name{font-family:var(--font-display);font-style:italic;font-weight:300;font-size:clamp(42px,5vw,68px);line-height:.92;color:var(--ink);margin-bottom:8px;}
+.cv-tagline{font-family:var(--font-prose);font-style:italic;font-size:15px;line-height:1.8;color:var(--dim2);max-width:380px;}
+.cv-section-title{font-family:var(--font-body);font-size:7px;letter-spacing:.3em;text-transform:uppercase;color:var(--dim);padding-bottom:10px;border-bottom:1px solid var(--rule);margin-bottom:20px;}
+.cv-bio{font-family:var(--font-prose);font-style:italic;font-size:14px;line-height:1.88;color:var(--dim2);}
+.cv-skills{display:flex;flex-wrap:wrap;gap:8px;}
+.skill-tag{font-family:var(--font-body);font-size:7px;letter-spacing:.16em;text-transform:uppercase;padding:5px 12px;border:1px solid rgba(255,255,255,.12);border-radius:999px;color:var(--dim2);background:rgba(255,255,255,.04);}
+.cv-entries{display:flex;flex-direction:column;gap:24px;}
+.cv-entry-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:4px;}
+.cv-entry-title{font-family:var(--font-display);font-style:italic;font-size:17px;color:var(--ink);}
+.cv-entry-date{font-family:var(--font-body);font-size:7px;letter-spacing:.14em;color:var(--dim);white-space:nowrap;}
+.cv-entry-place{font-family:var(--font-body);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim2);margin-bottom:5px;}
+.cv-entry-desc{font-family:var(--font-prose);font-style:italic;font-size:13px;line-height:1.75;color:var(--dim2);}
+.cv-dl{display:inline-flex;align-items:center;gap:8px;margin-top:4px;font-family:var(--font-body);font-size:7px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim2);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:8px 16px;cursor:none;text-decoration:none;transition:background .2s,color .2s,border-color .2s;}
+.cv-dl:hover{background:rgba(255,255,255,.08);color:var(--ink);border-color:rgba(255,255,255,.25);}
+
+/* TEXTS */
+#S-TEXTS{background:var(--bg)}
+#S-TEXTS .texts-inner{position:fixed;inset:0;display:flex;flex-direction:column;}
+#S-TEXTS .texts-header{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 36px;border-bottom:1px solid var(--rule);background:rgba(8,8,8,.95);backdrop-filter:blur(20px);flex-shrink:0;}
+#S-TEXTS .texts-header h1{font-family:var(--font-display);font-style:italic;font-weight:300;font-size:19px;color:var(--ink);}
+#S-TEXTS .texts-body{flex:1;overflow-y:auto;padding:52px 40px 32px;}
+#S-TEXTS .texts-body::-webkit-scrollbar{width:2px}
+#S-TEXTS .texts-body::-webkit-scrollbar-thumb{background:var(--dim);border-radius:2px}
+#S-TEXTS .texts-desc{font-family:var(--font-prose);font-style:italic;font-size:16px;line-height:1.85;color:var(--dim2);max-width:520px;margin-bottom:44px;}
+.texts-list{display:flex;flex-direction:column;gap:0;max-width:720px;}
+.text-entry{display:flex;align-items:baseline;gap:20px;padding:20px 0;border-bottom:1px solid var(--rule);cursor:none;transition:padding-left .22s;}
+.text-entry:first-child{border-top:1px solid var(--rule);}
+.text-entry:hover{padding-left:8px;}
+.text-entry-num{font-family:var(--font-body);font-size:7px;letter-spacing:.18em;color:var(--dim);flex-shrink:0;width:28px;}
+.text-entry-info{flex:1;}
+.text-entry-title{font-family:var(--font-display);font-style:italic;font-size:20px;color:var(--ink);margin-bottom:4px;transition:color .2s;}
+.text-entry:hover .text-entry-title{color:var(--accent);}
+.text-entry-meta{font-family:var(--font-body);font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim2);}
+.text-entry-arrow{font-size:14px;color:var(--dim);transition:transform .22s,color .22s;flex-shrink:0;}
+.text-entry:hover .text-entry-arrow{transform:translateX(4px);color:var(--accent);}
+
+/* ABOUT SIDEBAR */
+#ABOUT-OVL{position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .38s;}
+#ABOUT-OVL.OPEN{opacity:1;pointer-events:all}
+#ABOUT-DRAWER{
+  position:fixed;top:0;right:0;bottom:0;width:min(400px,100vw);z-index:750;
+  background:#0a0909;border-left:1px solid var(--rule);
+  transform:translateX(100%);transition:transform .44s cubic-bezier(.25,.46,.45,.94);
+  overflow-y:auto;display:flex;flex-direction:column;
+}
+#ABOUT-DRAWER.OPEN{transform:none}
+#ABOUT-DRAWER::-webkit-scrollbar{width:2px}
+#ABOUT-DRAWER::-webkit-scrollbar-thumb{background:var(--dim);border-radius:2px}
+.adr-close{
+  position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:8px;
+  padding:15px 22px;background:rgba(8,8,8,.95);border-bottom:1px solid var(--rule);
+  backdrop-filter:blur(12px);cursor:none;font-size:7px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--dim2);transition:color .2s;
+}
+.adr-close:hover{color:var(--ink)}
+.adr-close::before{content:'←';font-size:12px}
+.adr-body{padding:32px 26px 44px;display:flex;flex-direction:column;gap:26px;flex:1}
+.adr-name{font-family:var(--font-display);font-style:italic;font-weight:300;font-size:clamp(30px,5vw,48px);line-height:.94;color:var(--ink);}
+.adr-bio{font-family:var(--font-prose);font-style:italic;font-size:14px;line-height:1.85;color:var(--dim2);}
+.adr-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.adr-btn{
+  font-family:var(--font-body);font-size:7px;letter-spacing:.2em;text-transform:uppercase;
+  padding:9px 18px;border-radius:999px;cursor:none;
+  border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--dim2);
+  transition:background .2s,color .2s,border-color .2s;
+}
+.adr-btn:hover{background:rgba(255,255,255,.1);color:var(--ink);border-color:rgba(255,255,255,.25);}
+</style>
+</head>
+<body>
+
+<div id="CUR"></div>
+<div id="CRING"></div>
+<div id="CVIEW">view</div>
+<div id="FOOTER">Alejandra Rivera Zamacona © 2026</div>
+
+<!-- SCREEN 1: HOME -->
+<div class="SCREEN ACTIVE" id="S-HOME">
+  <div class="splash-img"></div>
+  <div class="splash-hint">click anywhere to enter</div>
+</div>
+
+<!-- SCREEN 2: DRAWING BOARD -->
+<div class="SCREEN" id="S-MENU">
+  <div id="MENU-BG"></div>
+  <canvas id="DRAW-CANVAS"></canvas>
+  <header id="TOPBAR">
+    <button id="SITENAME">Alejandra Rivera Zamacona</button>
+    <nav id="TOPNAV">
+      <button class="np" id="BTN-ABOUT">About Me</button>
+      <button class="np" id="BTN-PORTFOLIO">Portfolio</button>
+      <button class="np" id="BTN-TATTOO">Tattoo</button>
+      <button class="np" id="BTN-MDEF">MDEF Masters Journey</button>
+      <button class="np" id="BTN-TEXTS">Texts here!</button>
+    </nav>
+  </header>
+  <div id="DRAW-TOOLBAR">
+    <button class="brush-btn ON" id="BRUSH-S" data-size="4">S</button>
+    <button class="brush-btn" id="BRUSH-M" data-size="10">M</button>
+    <button class="brush-btn" id="BRUSH-L" data-size="22">L</button>
+    <div class="brush-dot" id="BRUSH-PREVIEW" style="width:8px;height:8px;"></div>
+    <button id="BTN-CLEAR">clear canvas</button>
+  </div>
+</div>
+
+<!-- SCREEN 3: PORTFOLIO -->
+<div class="SCREEN" id="S-PORTFOLIO">
+  <header class="pg-header"><h1>Portfolio</h1><button class="back-btn" data-goto="menu">← Back</button></header>
+  <div class="pg-scroll"><div class="grid-3" id="PORTFOLIO-GRID"></div></div>
+</div>
+
+<!-- SCREEN 4: TATTOO -->
+<div class="SCREEN" id="S-TATTOO">
+  <header class="pg-header"><h1>Tattoo</h1><button class="back-btn" data-goto="menu">← Back</button></header>
+  <div class="pg-scroll"><div class="grid-3" id="TATTOO-GRID"></div></div>
+</div>
+
+<!-- SCREEN 5: MDEF -->
+<div class="SCREEN" id="S-MDEF">
+  <div class="mdef-inner">
+    <header class="mdef-header"><h1>MDEF Masters Journey</h1><button class="back-btn" data-goto="menu">← Back</button></header>
+    <div class="mdef-body">
+      <p class="mdef-desc">Masters in Design for Emergent Futures — an immersive, practice-based programme at IAAC and Fab Lab Barcelona exploring the intersection of technology, ecology, and participatory design. 2024–2025.</p>
+      <div class="mdef-terms">
+        <button class="term-btn t1" data-goto="term" data-term="T1">Term 1</button>
+        <button class="term-btn t2" data-goto="term" data-term="T2">Term 2</button>
+        <button class="term-btn t3" data-goto="term" data-term="T3">Term 3</button>
+        <button class="term-btn tf" data-goto="term" data-term="FP">Final Masters Project</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 6: TERM GRID -->
+<div class="SCREEN" id="S-TERM">
+  <header class="pg-header">
+    <h1 id="TERM-TITLE"><span class="term-color-dot" id="TERM-DOT"></span><span id="TERM-LABEL"></span></h1>
+    <button class="back-btn" data-goto="mdef">← MDEF</button>
+  </header>
+  <div class="pg-scroll"><div class="grid-3" id="TERM-GRID"></div></div>
+</div>
+
+<!-- SCREEN 7: DETAIL -->
+<div class="SCREEN" id="S-DETAIL">
+  <div class="detail-inner">
+    <header class="detail-header"><h2 id="DETAIL-HEADING">Project</h2><button class="back-btn" id="DETAIL-BACK">← Back</button></header>
+    <div class="detail-body"><div class="detail-name" id="DETAIL-NAME"></div><div class="detail-sub" id="DETAIL-SUB"></div></div>
+  </div>
+</div>
+
+<!-- SCREEN 8: CONTACT -->
+<div class="SCREEN" id="S-CONTACT">
+  <div class="contact-inner">
+    <header class="contact-header"><h2>Contact</h2><button class="back-btn" data-goto="menu">← Back</button></header>
+    <div class="contact-body">
+      <div class="contact-title">Let's<br>connect.</div>
+      <div class="ct-item"><span class="ct-label">Instagram</span><a href="https://instagram.com/aleriverazz" target="_blank">@aleriverazz</a><span class="ct-arrow">↗</span></div>
+      <!-- FIX: was missing the closing > on </div -->
+      <div class="ct-item"><span class="ct-label">Instagram · tattoo</span><a href="https://instagram.com/riveraazz" target="_blank">@riveraazz</a><span class="ct-arrow">↗</span></div>
+      <div class="ct-item"><span class="ct-label">LinkedIn</span><a href="https://www.linkedin.com/in/alejandra-rivera-zamacona-610a37187/?skipRedirect=true" target="_blank">Alejandra Rivera Zamacona</a><span class="ct-arrow">↗</span></div>
+      <div class="ct-item"><span class="ct-label">GitHub</span><a href="https://github.com/aleriverazz" target="_blank">github.com/aleriverazz</a><span class="ct-arrow">↗</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 9: CV -->
+<div class="SCREEN" id="S-CV">
+  <div class="cv-inner">
+    <header class="cv-header">
+      <h2>CV</h2>
+      <button class="back-btn" data-goto="menu">← Back</button>
+    </header>
+    <div class="cv-body">
+      <div class="cv-left">
+        <div>
+          <div class="cv-name">Alejandra Rivera Zamacona</div>
+          <div class="cv-tagline">★★★ <br/>You can find my spanish CV here:<br/></div>
+        </div>
+        <div>
+          <div class="cv-section-title">Bio</div>
+          <div class="cv-bio">
+            Based in Barcelona, currently completing the Masters in Design for Emergent Futures at IAAC and Fab Lab Barcelona. Her practice moves between physical fabrication, speculative design, community-based interventions, and extended intelligences.<br><br>
+            Originally from Mexico City, she brings a cross-cultural perspective to design research — questioning how emerging technologies can be made more equitable, poetic, and alive.
+          </div>
+        </div>
+        <div>
+          <div class="cv-section-title">Skills</div>
+          <div class="cv-skills">
+            <span class="skill-tag">Design Research</span>
+            <span class="skill-tag">Speculative Design</span>
+            <span class="skill-tag">Fabrication</span>
+            <span class="skill-tag">3D Printing</span>
+            <span class="skill-tag">Website Development</span>
+            <span class="skill-tag">Artificial Intelligence</span>
+            <span class="skill-tag">Arduino</span>
+            <span class="skill-tag">Grasshopper</span>
+            <span class="skill-tag">Rhino 3D</span>
+            <span class="skill-tag">Adobe Suite</span>
+            <span class="skill-tag">HTML / CSS</span>
+            <span class="skill-tag">Community Practice</span>
+            <span class="skill-tag">Futures Thinking</span>
+            <span class="skill-tag">Biodesign</span>
+            <span class="skill-tag">Spanish</span>
+            <span class="skill-tag">English</span>
+            <span class="skill-tag">Catalan (basic)</span>
+          </div>
+        </div>
+        <div>
+          <a class="cv-dl" href="#" target="_blank">↓ Download full CV</a>
+        </div>
+      </div>
+      <div class="cv-right">
+        <div>
+          <div class="cv-section-title">Education</div>
+          <div class="cv-entries">
+            <div class="cv-entry">
+              <div class="cv-entry-top">
+                <div class="cv-entry-title">Masters in Design for Emergent Futures</div>
+                <div class="cv-entry-date">2025 – 2026</div>
+              </div>
+              <div class="cv-entry-place">IAAC / ELISAVA · Barcelona, Spain</div>
+              <div class="cv-entry-desc">Interdisciplinary masters programme exploring design at the intersection of technology, ecology, and social systems.</div>
+            </div>
+            <div class="cv-entry">
+              <div class="cv-entry-top">
+                <div class="cv-entry-title">Bachelor in Architecture</div>
+                <div class="cv-entry-date">2015 – 2020</div>
+              </div>
+              <div class="cv-entry-place">Universidad Iberoamericana · Tijuana B.C., Mexico</div>
+              <div class="cv-entry-desc">Bachelors in Architecture with a focus on sustainable design and urban planning.</div>
+            </div>
+            <div class="cv-entry">
+              <div class="cv-entry-top">
+                <div class="cv-entry-title">Exchange Studies</div>
+                <div class="cv-entry-date">2018</div>
+              </div>
+              <div class="cv-entry-place">Universidad Católica de Córdoba · Córdoba, Argentina</div>
+              <div class="cv-entry-desc">Exchange studies program.</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="cv-section-title">Experience</div>
+          <div class="cv-entries">
+            <div class="cv-entry">
+              <div class="cv-entry-top">
+                <div class="cv-entry-title">Graphics Design · Illustration · Tattoo · Web Developing</div>
+                <div class="cv-entry-date">2020 – 2026</div>
+              </div>
+              <div class="cv-entry-place">Freelancer</div>
+              <div class="cv-entry-desc">Multidisciplinary designer, from illustration to web developing, visual research and brand storytelling through visual diagrams and infographics. Developed interactive map browser.</div>
+            </div>
+            <div class="cv-entry">
+              <div class="cv-entry-top">
+                <div class="cv-entry-title">Architect and Design Researcher</div>
+                <div class="cv-entry-date">2020 – 2026</div>
+              </div>
+              <div class="cv-entry-place">Estudio Santander</div>
+              <div class="cv-entry-desc">Creative direction and conceptualization for the Mexico Pavilion competition at the 2025 Venice Architecture Biennale. Development of visual and graphic identity for studio publications and competitions. 3D Modeling, Rendering, and AI workflow automation.</div>
+            </div>
+            <div class="cv-entry">
+              <div class="cv-entry-top">
+                <div class="cv-entry-title">Design Intern</div>
+                <div class="cv-entry-date">2021</div>
+              </div>
+              <div class="cv-entry-place">Design Studio — Mexico City</div>
+              <div class="cv-entry-desc">Supported product development and user research for consumer and social impact projects.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 10: TEXTS -->
+<div class="SCREEN" id="S-TEXTS">
+  <div class="texts-inner">
+    <header class="texts-header"><h1>Texts</h1><button class="back-btn" data-goto="menu">← Back</button></header>
+    <div class="texts-body">
+      <p class="texts-desc">Essays, reflections, and written experiments — words alongside the making.</p>
+      <div class="texts-list" id="TEXTS-LIST"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT SIDEBAR -->
+<div id="ABOUT-OVL"></div>
+<aside id="ABOUT-DRAWER">
+  <button class="adr-close" id="ABOUT-CLOSE">Close</button>
+  <div class="adr-body">
+    <div class="adr-name">Alejandra Rivera Zamacona</div>
+    <div class="adr-actions">
+      <button class="adr-btn" id="ABOUT-TO-CONTACT">Contact</button>
+      <button class="adr-btn" id="ABOUT-TO-PORTFOLIO">Portfolio</button>
+      <button class="adr-btn" id="ABOUT-TO-CV">CV</button>
+    </div>
+    <p class="adr-bio">★★★<br/>
+    a nice mixture from architecture to multimedia to editorial and illustration.<br/>
+    ★★★<br/>
+    Hi, I'm Ale!<br/>
+    I'm a mexican multidisciplinary designer and educator from Tijuana who believes the best ideas form at the intersection of disciplines—where architecture meets storytelling, and digital tools shake hands with handmade processes.
+    My journey started in architecture and took me everywhere: directing creative projects for the Biennale Sessions project at the Venice Biennale of Architecture (2021), designing visual identities for studios, illustrating, building research-driven narratives, teaching students and even tattooing.
+    Currently based in Barcelona, I'm diving deeper into a Master in Design for Emergent Futures at ELISAVA-IAAC.
+    But honestly? I just love building things—whether it's a data visualization, a publication, a classroom experiment, or a story worth telling.
+    I wear different hats—creative director, designer, researcher, teacher—and I've learned that the magic happens when you let them mix. I'm detail-obsessed but never lose sight of the big picture, and I bring the same energy to designing a layout, mentoring a student, or mapping out a concept with a team.
+    have fun looking around and let's build something together!<br/>
+    ★★★<br/>
+    with love Ale :).</p>
+  </div>
+</aside>
+
+<script>
+'use strict';
+
+const PORTFOLIO_PROJECTS=[
+  {title:'Biophilic Systems',label:'Design Research · 2024',img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80'},
+  {title:'Extended Intelligences',label:'AI & Design · 2025',img:'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=80'},
+  {title:'Material Futures',label:'Fabrication · 2024',img:'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&q=80'},
+  {title:'Weak Signals Atlas',label:'Futures Design · 2025',img:'https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=600&q=80'},
+  {title:'Community Intervention',label:'Participatory Design · 2025',img:'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80'},
+  {title:'Final Masters Project',label:'Thesis · 2025',img:'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=600&q=80'},
+];
+
+const TATTOO_PROJECTS=[
+  {title:'Botanical Study I',label:'Fine line · 2024',img:'https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=600&q=80'},
+  {title:'Geometric Mandala',label:'Blackwork · 2024',img:'https://images.unsplash.com/photo-1542856204-00101eb6def4?w=600&q=80'},
+  {title:'Moth & Moon',label:'Illustrative · 2023',img:'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=600&q=80'},
+  {title:'Serpent Flow',label:'Neo-traditional · 2024',img:'https://images.unsplash.com/photo-1568515387631-8b650bbcdb90?w=600&q=80'},
+  {title:'Constellation Map',label:'Fine line · 2025',img:'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&q=80'},
+  {title:'Organic Forms',label:'Abstract · 2025',img:'https://images.unsplash.com/photo-1490750967868-88df5691cc5e?w=600&q=80'},
+];
+
+const TERM_DATA={
+  T1:{label:'Term 1',color:'var(--c1)',subjects:[
+    {title:'Design Studio I',label:'Subject 1',img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80'},
+    {title:'Unpacking Tech Systems',label:'Subject 2',img:'https://images.unsplash.com/photo-1523531294919-4bcd7c65e216?w=600&q=80'},
+    {title:'Reflections I',label:'Subject 3',img:'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&q=80'},
+    {title:'Weak Signals',label:'Subject 4',img:'https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=600&q=80'},
+    {title:'Biology & Agrifood',label:'Subject 5',img:'https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=600&q=80'},
+    {title:'Machine Paradox',label:'Subject 6',img:'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600&q=80'},
+    {title:'Living with Ideas',label:'Subject 7',img:'https://images.unsplash.com/photo-1516414447565-b14be0adf13e?w=600&q=80'},
+    {title:'Micro Challenge I',label:'Subject 8',img:'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&q=80'},
+  ]},
+  T2:{label:'Term 2',color:'var(--c2)',subjects:[
+    {title:'Design Studio II',label:'Subject 1',img:'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80'},
+    {title:'Extended Intelligences',label:'Subject 2',img:'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=80'},
+    {title:'Communicating Ideas',label:'Subject 3',img:'https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=600&q=80'},
+    {title:'Micro Challenge II',label:'Subject 4',img:'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600&q=80'},
+    {title:'Design with Others',label:'Subject 5',img:'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80'},
+    {title:'Futures & Ethics',label:'Subject 6',img:'https://images.unsplash.com/photo-1516414447565-b14be0adf13e?w=600&q=80'},
+    {title:'Reflections II',label:'Subject 7',img:'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&q=80'},
+    {title:'Prototyping for Design',label:'Subject 8',img:'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80'},
+  ]},
+  T3:{label:'Term 3',color:'var(--c3)',subjects:[
+    {title:'Design Studio III',label:'Subject 1',img:'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&q=80'},
+    {title:'Thesis Seminar',label:'Subject 2',img:'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&q=80'},
+    {title:'Measuring the World',label:'Subject 3',img:'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80'},
+    {title:'Micro Challenge III',label:'Subject 4',img:'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&q=80'},
+    {title:'Design Intervention II',label:'Subject 5',img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80'},
+    {title:'Open Source Design',label:'Subject 6',img:'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600&q=80'},
+    {title:'Reflections III',label:'Subject 7',img:'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=80'},
+    {title:'Community Practice',label:'Subject 8',img:'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80'},
+  ]},
+  FP:{label:'Final Masters Project',color:'var(--cf)',subjects:[
+    {title:'Research & Framing',label:'Phase 1',img:'https://images.unsplash.com/photo-1516414447565-b14be0adf13e?w=600&q=80'},
+    {title:'Prototyping Iterations',label:'Phase 2',img:'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&q=80'},
+    {title:'Community Testing',label:'Phase 3',img:'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80'},
+    {title:'Final Exhibition',label:'Phase 4',img:'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=600&q=80'},
+  ]},
+};
+
+const TEXTS_DATA=[
+  {title:'On Designing with Uncertainty',meta:'Essay · 2025',num:'01'},
+  {title:'Notes from the Fab Lab',meta:'Reflection · 2024',num:'02'},
+  {title:'Who Gets to Imagine the Future?',meta:'Essay · 2025',num:'03'},
+  {title:'Learning as Making',meta:'Essay · 2024',num:'04'},
+  {title:'The Poetics of Broken Tools',meta:'Essay · 2025',num:'05'},
+];
+
+/* NAVIGATION */
+const screens={
+  home:document.getElementById('S-HOME'),
+  menu:document.getElementById('S-MENU'),
+  portfolio:document.getElementById('S-PORTFOLIO'),
+  tattoo:document.getElementById('S-TATTOO'),
+  mdef:document.getElementById('S-MDEF'),
+  term:document.getElementById('S-TERM'),
+  detail:document.getElementById('S-DETAIL'),
+  contact:document.getElementById('S-CONTACT'),
+  cv:document.getElementById('S-CV'),
+  texts:document.getElementById('S-TEXTS'),
+};
+let _current='home', _detailBack='menu';
+
+function goTo(name){
+  Object.values(screens).forEach(s=>s.classList.remove('ACTIVE'));
+  if(screens[name])screens[name].classList.add('ACTIVE');
+  _current=name;
+  document.body.classList.toggle('on-home',name==='home');
+  document.body.classList.toggle('cDRAW', name==='menu');
+}
+
+/* GRID BUILDERS */
+function makeGrid(items,containerId,backDest){
+  document.getElementById(containerId).innerHTML=items.map(p=>`
+    <div class="grid-card" data-goto="detail" data-name="${p.title}" data-sub="${p.label}" data-back="${backDest}">
+      <div class="card-img"><img src="${p.img}" alt="${p.title}" loading="lazy"/></div>
+      <div class="card-info"><div class="card-label">${p.label}</div><div class="card-title">${p.title}</div></div>
+    </div>`).join('');
+}
+
+function buildTermGrid(termKey){
+  const term=TERM_DATA[termKey];
+  document.getElementById('TERM-LABEL').textContent=term.label;
+  document.getElementById('TERM-DOT').style.cssText=`background:${term.color};width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-right:8px;`;
+  document.getElementById('TERM-GRID').innerHTML=term.subjects.map(s=>`
+    <div class="grid-card" data-goto="detail" data-name="${s.title}" data-sub="${s.label}" data-back="term">
+      <div class="card-img"><img src="${s.img}" alt="${s.title}" loading="lazy"/></div>
+      <div class="card-info"><div class="card-label">${s.label}</div><div class="card-title">${s.title}</div></div>
+    </div>`).join('');
+}
+
+function buildTexts(){
+  document.getElementById('TEXTS-LIST').innerHTML=TEXTS_DATA.map(t=>`
+    <div class="text-entry">
+      <span class="text-entry-num">${t.num}</span>
+      <div class="text-entry-info">
+        <div class="text-entry-title">${t.title}</div>
+        <div class="text-entry-meta">${t.meta}</div>
+      </div>
+      <span class="text-entry-arrow">↗</span>
+    </div>`).join('');
+}
+
+function openDetail(name,sub,backTo){
+  _detailBack=backTo||'menu';
+  document.getElementById('DETAIL-NAME').textContent=name;
+  document.getElementById('DETAIL-SUB').textContent=sub||'';
+  document.getElementById('DETAIL-HEADING').textContent=name;
+  goTo('detail');
+}
+document.getElementById('DETAIL-BACK').addEventListener('click',()=>goTo(_detailBack));
+
+/* CLICK DELEGATION */
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-goto]');
+  if(!el)return;
+  e.stopPropagation();
+  const{goto:dest,name,sub,back,term}=el.dataset;
+  if(dest==='detail') openDetail(name,sub,back||_current);
+  else if(dest==='term'&&term){buildTermGrid(term);goTo('term');}
+  else if(dest==='menu') goTo('menu');
+  else if(dest==='mdef') goTo('mdef');
+  else if(dest==='portfolio') goTo('portfolio');
+  else if(dest==='tattoo') goTo('tattoo');
+  else if(dest==='cv') goTo('cv');
+  else if(dest==='contact') goTo('contact');
+  else if(dest==='texts') goTo('texts');
+});
+
+/* HOME */
+document.getElementById('S-HOME').addEventListener('click',()=>goTo('menu'));
+
+/* TOP NAV */
+document.getElementById('BTN-ABOUT').addEventListener('click',e=>{e.stopPropagation();openAbout();});
+document.getElementById('BTN-PORTFOLIO').addEventListener('click',e=>{e.stopPropagation();makeGrid(PORTFOLIO_PROJECTS,'PORTFOLIO-GRID','portfolio');goTo('portfolio');});
+document.getElementById('BTN-TATTOO').addEventListener('click',e=>{e.stopPropagation();makeGrid(TATTOO_PROJECTS,'TATTOO-GRID','tattoo');goTo('tattoo');});
+document.getElementById('BTN-MDEF').addEventListener('click',e=>{e.stopPropagation();goTo('mdef');});
+document.getElementById('BTN-TEXTS').addEventListener('click',e=>{e.stopPropagation();buildTexts();goTo('texts');});
+document.getElementById('SITENAME').addEventListener('click',e=>{e.stopPropagation();goTo('home');});
+
+/* ABOUT SIDEBAR */
+const aboutOvl=document.getElementById('ABOUT-OVL'),aboutDrawer=document.getElementById('ABOUT-DRAWER');
+function openAbout(){aboutOvl.classList.add('OPEN');aboutDrawer.classList.add('OPEN');}
+function closeAbout(){aboutOvl.classList.remove('OPEN');aboutDrawer.classList.remove('OPEN');}
+document.getElementById('ABOUT-CLOSE').addEventListener('click',closeAbout);
+aboutOvl.addEventListener('click',closeAbout);
+document.getElementById('ABOUT-TO-CONTACT').addEventListener('click',()=>{closeAbout();setTimeout(()=>goTo('contact'),200);});
+document.getElementById('ABOUT-TO-PORTFOLIO').addEventListener('click',()=>{closeAbout();makeGrid(PORTFOLIO_PROJECTS,'PORTFOLIO-GRID','portfolio');setTimeout(()=>goTo('portfolio'),200);});
+document.getElementById('ABOUT-TO-CV').addEventListener('click',()=>{closeAbout();setTimeout(()=>goTo('cv'),200);});
+
+/* DRAWING BOARD */
+const canvas=document.getElementById('DRAW-CANVAS');
+const ctx=canvas.getContext('2d');
+let brushSize=4, drawing=false, lastX=0, lastY=0;
+
+function resizeCanvas(){
+  const img=ctx.getImageData(0,0,canvas.width,canvas.height);
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight-52-28;
+  canvas.style.top='52px';
+  ctx.putImageData(img,0,0);
+  ctx.lineCap='round';ctx.lineJoin='round';
+  ctx.strokeStyle='rgba(255,10,202,0.85)';ctx.lineWidth=brushSize;
+}
+window.addEventListener('resize',resizeCanvas);
+resizeCanvas();
+
+function getPos(e){
+  const r=canvas.getBoundingClientRect();
+  if(e.touches)return{x:e.touches[0].clientX-r.left,y:e.touches[0].clientY-r.top};
+  return{x:e.clientX-r.left,y:e.clientY-r.top};
+}
+canvas.addEventListener('mousedown',e=>{
+  if(e.target.closest('button,a,#TOPBAR,#DRAW-TOOLBAR'))return;
+  drawing=true;const{x,y}=getPos(e);lastX=x;lastY=y;
+  ctx.beginPath();ctx.arc(x,y,brushSize/2,0,Math.PI*2);
+  ctx.fillStyle='rgba(255,10,202,0.85)';ctx.fill();
+});
+canvas.addEventListener('mousemove',e=>{
+  if(!drawing)return;const{x,y}=getPos(e);
+  ctx.beginPath();ctx.moveTo(lastX,lastY);ctx.lineTo(x,y);
+  ctx.lineWidth=brushSize;ctx.strokeStyle='rgba(255,10,202,0.85)';
+  ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke();lastX=x;lastY=y;
+});
+canvas.addEventListener('mouseup',()=>{drawing=false;});
+canvas.addEventListener('mouseleave',()=>{drawing=false;});
+canvas.addEventListener('touchstart',e=>{e.preventDefault();drawing=true;const{x,y}=getPos(e);lastX=x;lastY=y;},{passive:false});
+canvas.addEventListener('touchmove',e=>{
+  e.preventDefault();if(!drawing)return;const{x,y}=getPos(e);
+  ctx.beginPath();ctx.moveTo(lastX,lastY);ctx.lineTo(x,y);
+  ctx.lineWidth=brushSize;ctx.strokeStyle='rgba(255,10,202,0.85)';
+  ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke();lastX=x;lastY=y;
+},{passive:false});
+canvas.addEventListener('touchend',()=>{drawing=false;});
+
+const brushBtns=document.querySelectorAll('.brush-btn');
+const brushPreview=document.getElementById('BRUSH-PREVIEW');
+brushBtns.forEach(btn=>{
+  btn.addEventListener('click',e=>{
+    e.stopPropagation();
+    brushBtns.forEach(b=>b.classList.remove('ON'));btn.classList.add('ON');
+    brushSize=parseInt(btn.dataset.size);
+    brushPreview.style.width=brushSize+'px';brushPreview.style.height=brushSize+'px';
+    document.documentElement.style.setProperty('--brush-cur',Math.max(brushSize,6)+'px');
+  });
+});
+document.getElementById('BTN-CLEAR').addEventListener('click',e=>{e.stopPropagation();ctx.clearRect(0,0,canvas.width,canvas.height);});
+
+/* CUSTOM CURSOR */
+const CUR=document.getElementById('CUR'),CRING=document.getElementById('CRING'),CVIEW=document.getElementById('CVIEW');
+let mx=innerWidth/2,my=innerHeight/2,rx=mx,ry=my,tR=200,tG=192,tB=180,cR=tR,cG=tG,cB=tB;
+const lp=(a,b,t)=>a+(b-a)*t;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  const xr=e.clientX/innerWidth;
+  tR=Math.round(200-xr*18);tG=Math.round(192-xr*8);tB=Math.round(180+xr*28);
+  CUR.style.left=e.clientX+'px';CUR.style.top=e.clientY+'px';
+  CVIEW.style.left=e.clientX+'px';CVIEW.style.top=(e.clientY+28)+'px';
+});
+(function curTick(){
+  rx=lp(rx,mx,.09);ry=lp(ry,my,.09);
+  CRING.style.left=rx+'px';CRING.style.top=ry+'px';
+  cR=lp(cR,tR,.07);cG=lp(cG,tG,.07);cB=lp(cB,tB,.07);
+  const r=Math.round(cR),g=Math.round(cG),b=Math.round(cB);
+  document.documentElement.style.setProperty('--cr',r);
+  document.documentElement.style.setProperty('--cg',g);
+  document.documentElement.style.setProperty('--cb',b);
+  CUR.style.background=`rgba(${r},${g},${b},1)`;
+  CUR.style.boxShadow=`0 0 6px 3px rgba(${r},${g},${b},.28),0 0 16px 7px rgba(${r},${g},${b},.08)`;
+  CRING.style.borderColor=`rgba(${r},${g},${b},.36)`;
+  requestAnimationFrame(curTick);
+})();
+document.addEventListener('mouseover',e=>{
+  const h=e.target.closest('button,a,.grid-card,.ct-item,.term-btn,.back-btn,.np,.adr-btn,.brush-btn,.cv-dl,.text-entry');
+  document.body.classList.toggle('cHOVER',!!h && _current!=='menu');
+  if(_current!=='menu')CVIEW.style.opacity=h?'1':'0';
+  else CVIEW.style.opacity='0';
+});
+
+/* INIT */
+document.body.classList.add('on-home');
+makeGrid(PORTFOLIO_PROJECTS,'PORTFOLIO-GRID','portfolio');
+makeGrid(TATTOO_PROJECTS,'TATTOO-GRID','tattoo');
+</script>
+</body>
+</html>
