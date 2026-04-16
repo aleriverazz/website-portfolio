@@ -9,9 +9,9 @@
 <style>
 :root {
   --bg:     #0d0d0d;
-  --ink:    #e8e4de;
-  --dim:    #4e4a46;
-  --dim2:   #7a7074;
+  --ink:    #ffffff;
+  --dim:    #ffffff;
+  --dim2:   #dddddd;
   --rule:   rgba(255, 255, 255, 0.07);
   --accent: #c8c0b4;
   --font-display: 'Cormorant Garamond', Georgia, serif;
@@ -77,7 +77,7 @@ body.on-home #FOOTER{color:rgba(255,255,255,.18);border-top-color:rgba(255,255,2
 
 /* MENU */
 #S-MENU{background:var(--bg);z-index:150}
-#MENU-BG{position:absolute;inset:0;background:url('./images/MAZE.jpg') center/cover no-repeat;pointer-events:none;z-index:0;}
+#MENU-BG{position:absolute;inset:0;background:url('images/port/dogs_gif.gif') center/cover no-repeat;pointer-events:none;z-index:0;}
 #DRAW-CANVAS{position:absolute;top:52px;left:0;right:0;bottom:28px;z-index:2;}
 #TOPBAR{
   position:fixed;top:0;left:0;right:0;z-index:800;height:52px;
@@ -173,14 +173,128 @@ body.on-home #FOOTER{color:rgba(255,255,255,.18);border-top-color:rgba(255,255,2
 #S-TERM .pg-header h1{display:flex;align-items:center;gap:10px;}
 #S-TERM .term-color-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
 
-/* DETAIL */
+/* DETAIL - CAROUSEL & LIGHTBOX */
 #S-DETAIL{background:var(--bg)}
 .detail-inner{position:fixed;inset:0;display:flex;flex-direction:column;}
 .detail-header{height:52px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 36px;border-bottom:1px solid var(--rule);background:rgba(8,8,8,.95);backdrop-filter:blur(20px);}
 .detail-header h2{font-family:var(--font-display);font-style:italic;font-weight:300;font-size:19px;color:var(--ink);}
-.detail-body{flex:1;overflow-y:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 36px 28px;gap:16px;}
+.detail-body{
+  flex:1;overflow-y:auto;display:flex;flex-direction:column;align-items:center;
+  padding:48px 36px 28px;gap:32px;
+}
 .detail-name{font-family:var(--font-display);font-style:italic;font-weight:300;font-size:clamp(40px,6vw,76px);line-height:.92;color:var(--ink);text-align:center;}
 .detail-sub{font-size:7px;letter-spacing:.28em;text-transform:uppercase;color:var(--dim2);}
+.detail-description{
+  font-family:var(--font-prose);font-style:italic;font-size:16px;line-height:1.75;
+  color:var(--dim2);max-width:720px;width:100%;text-align:left;
+  padding:0 16px;white-space:pre-wrap;
+}
+
+/* CAROUSEL STYLES */
+.carousel-container {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  background: #111;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.carousel-slide {
+  width: 100%;
+  aspect-ratio: 16/9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0a0a0a;
+}
+.carousel-slide img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.carousel-prev, .carousel-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.6);
+  color: white;
+  border: none;
+  font-size: 2rem;
+  cursor: none;
+  padding: 0 16px;
+  border-radius: 4px;
+  z-index: 10;
+  transition: background 0.2s;
+  font-family: monospace;
+  line-height: 1;
+}
+.carousel-prev { left: 8px; }
+.carousel-next { right: 8px; }
+.carousel-prev:hover, .carousel-next:hover {
+  background: rgba(0,0,0,0.85);
+}
+.carousel-dots {
+  text-align: center;
+  padding: 12px 0;
+  background: rgba(0,0,0,0.4);
+}
+.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: var(--dim2);
+  border-radius: 50%;
+  margin: 0 6px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+.dot.active {
+  background: var(--ink);
+  transform: scale(1.2);
+}
+.dot:hover {
+  background: var(--accent);
+}
+
+/* LIGHTBOX */
+.lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.92);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+}
+.lightbox img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  box-shadow: 0 0 30px rgba(0,0,0,0.5);
+  border-radius: 4px;
+}
+.lightbox-close {
+  position: absolute;
+  top: 24px;
+  right: 32px;
+  font-size: 32px;
+  color: white;
+  font-family: monospace;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.lightbox-close:hover {
+  opacity: 1;
+}
 
 /* CONTACT */
 #S-CONTACT{background:var(--bg)}
@@ -350,11 +464,16 @@ body.on-home #FOOTER{color:rgba(255,255,255,.18);border-top-color:rgba(255,255,2
   <div class="pg-scroll"><div class="grid-3" id="TERM-GRID"></div></div>
 </div>
 
-<!-- SCREEN 7: DETAIL -->
+<!-- SCREEN 7: DETAIL (CAROUSEL + LIGHTBOX) -->
 <div class="SCREEN" id="S-DETAIL">
   <div class="detail-inner">
     <header class="detail-header"><h2 id="DETAIL-HEADING">Project</h2><button class="back-btn" id="DETAIL-BACK">← Back</button></header>
-    <div class="detail-body"><div class="detail-name" id="DETAIL-NAME"></div><div class="detail-sub" id="DETAIL-SUB"></div></div>
+    <div class="detail-body">
+      <div class="detail-name" id="DETAIL-NAME"></div>
+      <div class="detail-sub" id="DETAIL-SUB"></div>
+      <div class="detail-description" id="DETAIL-DESC"></div>
+      <div id="DETAIL-IMAGES"></div> <!-- carousel will be injected here -->
+    </div>
   </div>
 </div>
 
@@ -365,7 +484,6 @@ body.on-home #FOOTER{color:rgba(255,255,255,.18);border-top-color:rgba(255,255,2
     <div class="contact-body">
       <div class="contact-title">Let's<br>connect.</div>
       <div class="ct-item"><span class="ct-label">Instagram</span><a href="https://instagram.com/aleriverazz" target="_blank">@aleriverazz</a><span class="ct-arrow">↗</span></div>
-      <!-- FIX: was missing the closing > on </div -->
       <div class="ct-item"><span class="ct-label">Instagram · tattoo</span><a href="https://instagram.com/riveraazz" target="_blank">@riveraazz</a><span class="ct-arrow">↗</span></div>
       <div class="ct-item"><span class="ct-label">LinkedIn</span><a href="https://www.linkedin.com/in/alejandra-rivera-zamacona-610a37187/?skipRedirect=true" target="_blank">Alejandra Rivera Zamacona</a><span class="ct-arrow">↗</span></div>
       <div class="ct-item"><span class="ct-label">GitHub</span><a href="https://github.com/aleriverazz" target="_blank">github.com/aleriverazz</a><span class="ct-arrow">↗</span></div>
@@ -681,120 +799,256 @@ body.on-home #FOOTER{color:rgba(255,255,255,.18);border-top-color:rgba(255,255,2
 <script>
 'use strict';
 
-const PORTFOLIO_PROJECTS=[
-  {title:'Fog Catcher',label:'Web Interface Urban Research · 2026',img:'images/wind/beach.jpg'},  
-  {title:'Echo of Mind',label:'Design Project · 2026',img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80'},
-  {title:'Tecate Site Analysis',label:'Urban Project · 2025-2026',img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80'},
-  {title:'Editorial Design"',label:'Digital · 2025',img:'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80'},
-  {title:'Analysis of a Heartbreak: A personnel inquiry"',label:'Multimedia · 2025',img:'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80'},
-  {title:'Proposal: Mexico Pavilion',label:'“Open Call Competition (INBAL)” · 2025',img:'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=80'},
-  {title:'Biomaterials Research',label:'Fabrication · 2024',img:'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&q=80'},
-  {title:'Pink Imaginary',label:'AI Design Research · 2022',img:'https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=600&q=80'},
-  {title:'TIOC Think Tank',label:'Design Research · 2017-2021',img:'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80'},
-  {title:'A Story of Fluid Kinship: Rethinking Our Connection with Water"',label:'Design · 2020',img:'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80'},
-  {title:'Proposal "Estacion Chabacano"',label:'Urban Design · 2019',img:'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80'},
-  {title:'Architecture Visualization',label:'Rendering · 2025',img:'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=600&q=80'},
+// ------------------------------
+// PROJECT DATA (now with desc + images)
+// ------------------------------
+
+const PORTFOLIO_PROJECTS = [
+  {
+    title: 'Fog Catcher',
+    label: 'Web Interface Urban Research · 2026',
+    img: 'images/port/PORTFOLIO ICONS/ICONS-02.jpg',
+    desc: 'The FogHarvest web tool combines real-time meteorological data (wind speed, direction, humidity) with 3D terrain and user-uploaded building models to assess fog collection potential. Users click a location on an interactive MapTiler map, which triggers API calls to Open-Meteo (ICON/GFS models) for hourly wind and humidity data. The system computes feasibility scores, water yield estimates (L/m²/day), and visualizes wind fields as particle animations. An integrated 3D wind tunnel (Three.js) lets users upload GLTF/OBJ/STL models, apply real-world scales, and run dipole flow simulations to visualize airflow patterns and harvest potential. This ongoing research is led by Studio Santander, aiming to optimize fog harvesting infrastructure in coastal arid regions.',
+    images: ['images/wind/mockup.png', 'images/fog2.jpg', 'images/fog3.jpg']
+  },
+  {
+    title: 'Echo of Mind',
+    label: 'Design Project · 2026',
+    img: 'images/port/PORTFOLIO ICONS/ICONS-01.jpg',
+    desc: 'Interactive installation that translates brainwave patterns into visual and tactile feedback. Explores the relationship between memory and architecture.',
+    images: ['https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80', 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&q=80']
+  },
+  {
+    title: 'Tecate Site Analysis',
+    label: 'Urban Project · 2025-2026',
+    img: 'images/port/PORTFOLIO ICONS/ICONS-03.jpg',
+    desc: 'In-depth analysis of water management and public space in Tecate, BC. Proposes low-tech interventions to improve stormwater harvesting.',
+    images: ['https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80']
+  },
+  {
+    title: 'Editorial Design',
+    label: 'Digital · 2025',
+    img: 'images/port/PORTFOLIO ICONS/ICONS-04.jpg',
+    desc: 'Experimental editorial layouts blending parametric typography with handmade collage. Published as a limited edition zine.',
+    images: ['https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80']
+  },
+  {
+    title: 'Analysis of a Heartbreak: A personal inquiry',
+    label: 'Multimedia · 2025',
+    img: 'images/port/PORTFOLIO ICONS/ICONS-05.jpg',
+    desc: 'A multimedia essay combining video, text, and data visualization to explore emotional mapping and memory.',
+    images: ['https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80']
+  },
+  {
+    title: 'Proposal: Mexico Pavilion',
+    label: 'Open Call Competition (INBAL) · 2025',
+    img: 'images/port/PORTFOLIO ICONS/ICONS-06.jpg',
+    desc: 'Concept for the Mexico Pavilion at the Venice Architecture Biennale 2025. Focuses on water scarcity and collective memory.',
+    images: ['https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=800&q=80']
+  },
+  {
+    title: 'Biomaterials Research',
+    label: 'Fabrication · 2024',
+    img: 'images/port/PORTFOLIO ICONS/ICONS-07.jpg',
+    desc: 'Experiments with mycelium, algae, and food waste to create biodegradable building materials.',
+    images: ['https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&q=80']
+  },
+  {
+    title: 'Pink Imaginary',
+    label: 'AI Design Research · 2022',
+    img: 'images/port/PORTFOLIO ICONS/ICONS-08.jpg',
+    desc: 'Critical exploration of gendered AI aesthetics. Generated and curated a dataset of 10,000 images to question bias in generative models.',
+    images: ['https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=800&q=80']
+  },
+  {
+    title: 'TIOC Think Tank',
+    label: 'Design Research · 2017-2021',
+    img: 'images/port/PORTFOLIO ICONS/ICONS-09.jpg',
+    desc: 'Urban research lab focused on speculative narratives and emergent technologies. Presented at Venice Biennale 2018 & 2021.',
+    images: ['https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80']
+  },
+  {
+    title: 'A Story of Fluid Kinship: Rethinking Our Connection with Water',
+    label: 'Design · 2020',
+    img: 'images/port/PORTFOLIO ICONS/ICONS-10.jpg',
+    desc: 'Speculative storytelling project imagining futures where water is a relative, not a resource.',
+    images: ['https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80']
+  },
+  {
+    title: 'Proposal "Estacion Chabacano"',
+    label: 'Urban Design · 2019',
+    img: 'images/port/PORTFOLIO ICONS/ICONS-11.jpg',
+    desc: 'Reactivation proposal for a public transport hub in Mexico City, using tactical urbanism and community engagement.',
+    images: ['https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80']
+  },
+  {
+    title: 'Architecture Visualization',
+    label: 'Rendering · 2025',
+    img: 'images/port/PORTFOLIO ICONS/ICONS-12.jpg',
+    desc: 'Photorealistic and atmospheric renderings for architectural competitions and editorial projects.',
+    images: ['https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=800&q=80']
+  }
 ];
 
-const TATTOO_PROJECTS=[
-  {title:'Tattoo Portfolio',label:'2020-2026',img:'https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=600&q=80'},
-  {title:'Flash Design',label:'2020-2026',img:'https://images.unsplash.com/photo-1542856204-00101eb6def4?w=600&q=80'},
-  {title:'Painting',label:'2020-2026',img:'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=600&q=80'},
-  {title:'Merch',label:'2020-2026',img:'https://images.unsplash.com/photo-1568515387631-8b650bbcdb90?w=600&q=80'},
+const TATTOO_PROJECTS = [
+  {
+    title: 'Tattoo Portfolio',
+    label: '2020-2026',
+    img: 'images/tattoo/icons-01.jpg',
+    desc: 'Selection of fine‑line and ornamental tattoos realized between 2020 and 2026. Custom designs focusing on botanical motifs and geometric patterns.',
+    images: ['images/tattoo/pictures/IMG_1370.jpg', 'images/tattoo/pictures/processed-0A95C0C0-9613-476D-AB68-DCB4E26CD9C2.jpeg', 'images/tattoo/pictures/processed-A4FA2A25-83B2-48D0-A7F0-E7AC813CD567.jpeg', 'images/tattoo/pictures/processed-AD6C973F-ECA3-45A9-92CC-112FD24621DF.jpeg', 'images/tattoo/pictures/processed-EC0D1513-4DFE-4634-8C12-69969FADFB3D.jpeg', ]
+  },
+  {
+    title: 'Flash Design',
+    label: '2020-2026',
+    img: 'images/tattoo/icons-02.jpg',
+    desc: 'Original flash sheets inspired by Mexican folk art, surrealism, and nature. Available for guest spots.',
+    images: ['https://images.unsplash.com/photo-1542856204-00101eb6def4?w=800&q=80']
+  },
+  {
+    title: 'Painting',
+    label: '2020-2026',
+    img: 'images/tattoo/icons-03.jpg',
+    desc: 'Watercolor and ink paintings that often become tattoo designs. Explores themes of identity and transformation.',
+    images: ['https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=800&q=80']
+  },
+  {
+    title: 'Merch',
+    label: '2020-2026',
+    img: 'images/tattoo/icons-04.jpg',
+    desc: 'Limited edition prints, stickers, and apparel featuring tattoo flash and original illustrations.',
+    images: ['https://images.unsplash.com/photo-1568515387631-8b650bbcdb90?w=800&q=80']
+  }
 ];
 
-const TERM_DATA={
-  T1:{label:'Term 1',color:'var(--c1)',subjects:[
-    {title:'Design Studio I',label:'Subject 1',img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80'},
-    {title:'Unpacking Tech Systems',label:'Subject 2',img:'https://images.unsplash.com/photo-1523531294919-4bcd7c65e216?w=600&q=80'},
-    {title:'Reflections I',label:'Subject 3',img:'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&q=80'},
-    {title:'Weak Signals',label:'Subject 4',img:'https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=600&q=80'},
-    {title:'Biology & Agrifood',label:'Subject 5',img:'https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=600&q=80'},
-    {title:'Machine Paradox',label:'Subject 6',img:'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600&q=80'},
-    {title:'Living with Ideas',label:'Subject 7',img:'https://images.unsplash.com/photo-1516414447565-b14be0adf13e?w=600&q=80'},
-    {title:'Micro Challenge I',label:'Subject 8',img:'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&q=80'},
-  ]},
-  T2:{label:'Term 2',color:'var(--c2)',subjects:[
-    {title:'Design Studio II',label:'Subject 1',img:'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80'},
-    {title:'Extended Intelligences',label:'Subject 2',img:'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=80'},
-    {title:'Communicating Ideas',label:'Subject 3',img:'https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=600&q=80'},
-    {title:'Micro Challenge II',label:'Subject 4',img:'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600&q=80'},
-    {title:'Design with Others',label:'Subject 5',img:'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80'},
-    {title:'Futures & Ethics',label:'Subject 6',img:'https://images.unsplash.com/photo-1516414447565-b14be0adf13e?w=600&q=80'},
-    {title:'Reflections II',label:'Subject 7',img:'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&q=80'},
-    {title:'Prototyping for Design',label:'Subject 8',img:'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80'},
-  ]},
-  T3:{label:'Term 3',color:'var(--c3)',subjects:[
-    {title:'Design Studio III',label:'Subject 1',img:'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&q=80'},
-    {title:'Thesis Seminar',label:'Subject 2',img:'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&q=80'},
-    {title:'Measuring the World',label:'Subject 3',img:'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80'},
-    {title:'Micro Challenge III',label:'Subject 4',img:'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&q=80'},
-    {title:'Design Intervention II',label:'Subject 5',img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80'},
-    {title:'Open Source Design',label:'Subject 6',img:'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600&q=80'},
-    {title:'Reflections III',label:'Subject 7',img:'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=80'},
-    {title:'Community Practice',label:'Subject 8',img:'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80'},
-  ]},
-  FP:{label:'Final Masters Project',color:'var(--cf)',subjects:[
-    {title:'Research & Framing',label:'Phase 1',img:'https://images.unsplash.com/photo-1516414447565-b14be0adf13e?w=600&q=80'},
-    {title:'Prototyping Iterations',label:'Phase 2',img:'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&q=80'},
-    {title:'Community Testing',label:'Phase 3',img:'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80'},
-    {title:'Final Exhibition',label:'Phase 4',img:'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=600&q=80'},
-  ]},
+const TERM_DATA = {
+  T1: {
+    label: 'Term 1',
+    color: 'var(--c1)',
+    subjects: [
+      { title: 'Design Studio I', label: 'Subject 1', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80', desc: 'First design studio exploring speculative interventions in urban ecologies.', images: ['https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80'] },
+      { title: 'Unpacking Tech Systems', label: 'Subject 2', img: 'https://images.unsplash.com/photo-1523531294919-4bcd7c65e216?w=600&q=80', desc: 'Critical analysis of technological infrastructures and their hidden biases.', images: ['https://images.unsplash.com/photo-1523531294919-4bcd7c65e216?w=800&q=80'] },
+      { title: 'Reflections I', label: 'Subject 3', img: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&q=80', desc: 'Personal and collective reflection on the role of design in emergent futures.', images: ['https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&q=80'] },
+      { title: 'Weak Signals', label: 'Subject 4', img: 'https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=600&q=80', desc: 'Identifying early indicators of change and using them to prototype futures.', images: ['https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=800&q=80'] },
+      { title: 'Biology & Agrifood', label: 'Subject 5', img: 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=600&q=80', desc: 'Hands-on biodesign experiments with mycelium and algae.', images: ['https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=800&q=80'] },
+      { title: 'Machine Paradox', label: 'Subject 6', img: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600&q=80', desc: 'Exploring the tension between automation and human agency.', images: ['https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=80'] },
+      { title: 'Living with Ideas', label: 'Subject 7', img: 'https://images.unsplash.com/photo-1516414447565-b14be0adf13e?w=600&q=80', desc: 'Methods to sustain long-term creative and research practices.', images: ['https://images.unsplash.com/photo-1516414447565-b14be0adf13e?w=800&q=80'] },
+      { title: 'Micro Challenge I', label: 'Subject 8', img: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&q=80', desc: 'Intensive 2-week project prototyping a solution for a local challenge.', images: ['https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&q=80'] }
+    ]
+  },
+  T2: {
+    label: 'Term 2',
+    color: 'var(--c2)',
+    subjects: [
+      { title: 'Design Studio II', label: 'Subject 1', img: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80', desc: 'Advanced studio focusing on participatory design with communities.', images: ['https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80'] },
+      { title: 'Extended Intelligences', label: 'Subject 2', img: 'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=80', desc: 'Human-AI collaboration and collective intelligence.', images: ['https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=800&q=80'] },
+      { title: 'Communicating Ideas', label: 'Subject 3', img: 'https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=600&q=80', desc: 'Visual storytelling and publication design.', images: ['https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=800&q=80'] },
+      { title: 'Micro Challenge II', label: 'Subject 4', img: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600&q=80', desc: 'Rapid prototyping with emerging technologies.', images: ['https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=80'] },
+      { title: 'Design with Others', label: 'Subject 5', img: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80', desc: 'Collaborative design methodologies and co-creation.', images: ['https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80'] },
+      { title: 'Futures & Ethics', label: 'Subject 6', img: 'https://images.unsplash.com/photo-1516414447565-b14be0adf13e?w=600&q=80', desc: 'Ethical frameworks for speculative design.', images: ['https://images.unsplash.com/photo-1516414447565-b14be0adf13e?w=800&q=80'] },
+      { title: 'Reflections II', label: 'Subject 7', img: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&q=80', desc: 'Mid‑program critical reflection and positioning.', images: ['https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&q=80'] },
+      { title: 'Prototyping for Design', label: 'Subject 8', img: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80', desc: 'Advanced physical and digital prototyping techniques.', images: ['https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80'] }
+    ]
+  },
+  T3: {
+    label: 'Term 3',
+    color: 'var(--c3)',
+    subjects: [
+      { title: 'Design Studio III', label: 'Subject 1', img: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&q=80', desc: 'Final studio synthesizing all learnings into a major project.', images: ['https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&q=80'] },
+      { title: 'Thesis Seminar', label: 'Subject 2', img: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&q=80', desc: 'Developing research questions and methodology for the final project.', images: ['https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&q=80'] },
+      { title: 'Measuring the World', label: 'Subject 3', img: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80', desc: 'Sensor technologies and data literacy.', images: ['https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80'] },
+      { title: 'Micro Challenge III', label: 'Subject 4', img: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&q=80', desc: 'Final micro challenge integrating technical and social dimensions.', images: ['https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&q=80'] },
+      { title: 'Design Intervention II', label: 'Subject 5', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80', desc: 'Real‑world intervention testing the design proposal.', images: ['https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80'] },
+      { title: 'Open Source Design', label: 'Subject 6', img: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600&q=80', desc: 'Sharing and licensing design for commons.', images: ['https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=80'] },
+      { title: 'Reflections III', label: 'Subject 7', img: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=80', desc: 'Final reflection and documentation of the learning journey.', images: ['https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80'] },
+      { title: 'Community Practice', label: 'Subject 8', img: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80', desc: 'Working with local communities to co‑design solutions.', images: ['https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80'] }
+    ]
+  },
+  FP: {
+    label: 'Final Masters Project',
+    color: 'var(--cf)',
+    subjects: [
+      { title: 'Research & Framing', label: 'Phase 1', img: 'https://images.unsplash.com/photo-1516414447565-b14be0adf13e?w=600&q=80', desc: 'Defining research questions and theoretical framework.', images: ['https://images.unsplash.com/photo-1516414447565-b14be0adf13e?w=800&q=80'] },
+      { title: 'Prototyping Iterations', label: 'Phase 2', img: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&q=80', desc: 'Successive prototypes tested with users.', images: ['https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&q=80'] },
+      { title: 'Community Testing', label: 'Phase 3', img: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80', desc: 'In‑depth testing with the target community.', images: ['https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80'] },
+      { title: 'Final Exhibition', label: 'Phase 4', img: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=600&q=80', desc: 'Public presentation and documentation of the final outcome.', images: ['https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=800&q=80'] }
+    ]
+  }
 };
 
-const TEXTS_DATA=[
-  {title:'Filler, boobs and AI, are we all monsters now?',meta:'Essay · 2025',num:'01'},
-  {title:'From Folk to Pop - Reflections on Cultural Translation',meta:'Reflection · 2025',num:'02'},
-  {title:'Where is technology being reproduced?',meta:'Personnel Essay · 2025',num:'03'},
-  {title:'Learning as Making - A Reflective Essay',meta:'Essay · 2025',num:'04'},
-  {title:'CONSENSO DENTRO DEL BLOCKCHAIN',meta:'Research · 2017-18',num:'05'},
+const TEXTS_DATA = [
+  { title: 'Filler, boobs and AI, are we all monsters now?', meta: 'Essay · 2025', num: '01' },
+  { title: 'From Folk to Pop - Reflections on Cultural Translation', meta: 'Reflection · 2025', num: '02' },
+  { title: 'Where is technology being reproduced?', meta: 'Personnel Essay · 2025', num: '03' },
+  { title: 'Learning as Making - A Reflective Essay', meta: 'Essay · 2025', num: '04' },
+  { title: 'CONSENSO DENTRO DEL BLOCKCHAIN', meta: 'Research · 2017-18', num: '05' }
 ];
 
-/* NAVIGATION */
-const screens={
-  home:document.getElementById('S-HOME'),
-  menu:document.getElementById('S-MENU'),
-  portfolio:document.getElementById('S-PORTFOLIO'),
-  tattoo:document.getElementById('S-TATTOO'),
-  mdef:document.getElementById('S-MDEF'),
-  term:document.getElementById('S-TERM'),
-  detail:document.getElementById('S-DETAIL'),
-  contact:document.getElementById('S-CONTACT'),
-  cv:document.getElementById('S-CV'),
-  texts:document.getElementById('S-TEXTS'),
+// ------------------------------
+// NAVIGATION & SCREENS
+// ------------------------------
+const screens = {
+  home: document.getElementById('S-HOME'),
+  menu: document.getElementById('S-MENU'),
+  portfolio: document.getElementById('S-PORTFOLIO'),
+  tattoo: document.getElementById('S-TATTOO'),
+  mdef: document.getElementById('S-MDEF'),
+  term: document.getElementById('S-TERM'),
+  detail: document.getElementById('S-DETAIL'),
+  contact: document.getElementById('S-CONTACT'),
+  cv: document.getElementById('S-CV'),
+  texts: document.getElementById('S-TEXTS')
 };
-let _current='home', _detailBack='menu';
+let _current = 'home', _detailBack = 'menu';
 
-function goTo(name){
-  Object.values(screens).forEach(s=>s.classList.remove('ACTIVE'));
-  if(screens[name])screens[name].classList.add('ACTIVE');
-  _current=name;
-  document.body.classList.toggle('on-home',name==='home');
-  document.body.classList.toggle('cDRAW', name==='menu');
+function goTo(name) {
+  Object.values(screens).forEach(s => s.classList.remove('ACTIVE'));
+  if (screens[name]) screens[name].classList.add('ACTIVE');
+  _current = name;
+  document.body.classList.toggle('on-home', name === 'home');
+  document.body.classList.toggle('cDRAW', name === 'menu');
 }
 
-/* GRID BUILDERS */
-function makeGrid(items,containerId,backDest){
-  document.getElementById(containerId).innerHTML=items.map(p=>`
-    <div class="grid-card" data-goto="detail" data-name="${p.title}" data-sub="${p.label}" data-back="${backDest}">
+// ------------------------------
+// GRID BUILDERS (with index for detail)
+// ------------------------------
+function makeGrid(items, containerId, backDest) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = items.map((p, idx) => `
+    <div class="grid-card" 
+         data-goto="detail" 
+         data-index="${idx}"
+         data-back="${backDest}"
+         data-context="${containerId}">
       <div class="card-img"><img src="${p.img}" alt="${p.title}" loading="lazy"/></div>
-      <div class="card-info"><div class="card-label">${p.label}</div><div class="card-title">${p.title}</div></div>
+      <div class="card-info">
+        <div class="card-label">${p.label}</div>
+        <div class="card-title">${p.title}</div>
+      </div>
     </div>`).join('');
 }
 
-function buildTermGrid(termKey){
-  const term=TERM_DATA[termKey];
-  document.getElementById('TERM-LABEL').textContent=term.label;
-  document.getElementById('TERM-DOT').style.cssText=`background:${term.color};width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-right:8px;`;
-  document.getElementById('TERM-GRID').innerHTML=term.subjects.map(s=>`
-    <div class="grid-card" data-goto="detail" data-name="${s.title}" data-sub="${s.label}" data-back="term">
+function buildTermGrid(termKey) {
+  const term = TERM_DATA[termKey];
+  document.getElementById('TERM-LABEL').textContent = term.label;
+  document.getElementById('TERM-DOT').style.cssText = `background:${term.color};width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-right:8px;`;
+  const grid = document.getElementById('TERM-GRID');
+  grid.innerHTML = term.subjects.map((s, idx) => `
+    <div class="grid-card" 
+         data-goto="detail" 
+         data-index="${idx}" 
+         data-back="term"
+         data-context="term-${termKey}">
       <div class="card-img"><img src="${s.img}" alt="${s.title}" loading="lazy"/></div>
-      <div class="card-info"><div class="card-label">${s.label}</div><div class="card-title">${s.title}</div></div>
+      <div class="card-info">
+        <div class="card-label">${s.label}</div>
+        <div class="card-title">${s.title}</div>
+      </div>
     </div>`).join('');
 }
 
-function buildTexts(){
-  document.getElementById('TEXTS-LIST').innerHTML=TEXTS_DATA.map(t=>`
+function buildTexts() {
+  document.getElementById('TEXTS-LIST').innerHTML = TEXTS_DATA.map(t => `
     <div class="text-entry">
       <span class="text-entry-num">${t.num}</span>
       <div class="text-entry-info">
@@ -805,146 +1059,280 @@ function buildTexts(){
     </div>`).join('');
 }
 
-function openDetail(name,sub,backTo){
-  _detailBack=backTo||'menu';
-  document.getElementById('DETAIL-NAME').textContent=name;
-  document.getElementById('DETAIL-SUB').textContent=sub||'';
-  document.getElementById('DETAIL-HEADING').textContent=name;
+// ------------------------------
+// DETAIL VIEW (CAROUSEL + LIGHTBOX)
+// ------------------------------
+function openDetail(index, context, backTo) {
+  _detailBack = backTo || 'menu';
+  let project = null;
+
+  if (context === 'PORTFOLIO-GRID') {
+    project = PORTFOLIO_PROJECTS[index];
+  } else if (context === 'TATTOO-GRID') {
+    project = TATTOO_PROJECTS[index];
+  } else if (context && context.startsWith('term-')) {
+    const termKey = context.replace('term-', '');
+    const subjects = TERM_DATA[termKey].subjects;
+    project = subjects[index];
+  }
+
+  if (!project) return;
+
+  document.getElementById('DETAIL-NAME').textContent = project.title;
+  document.getElementById('DETAIL-SUB').textContent = project.label || '';
+  document.getElementById('DETAIL-HEADING').textContent = project.title;
+
+  // description with line breaks
+  const descEl = document.getElementById('DETAIL-DESC');
+  descEl.innerHTML = project.desc ? project.desc.replace(/\n/g, '<br/>') : 'No description yet.';
+
+  // --- CAROUSEL GENERATION ---
+  const imagesContainer = document.getElementById('DETAIL-IMAGES');
+  const images = project.images || [];
+  if (images.length === 0) {
+    imagesContainer.innerHTML = '<div style="color:var(--dim2); font-size:12px; text-align:center;">No images uploaded yet.</div>';
+    goTo('detail');
+    return;
+  }
+
+  let currentIndex = 0;
+
+  // Build carousel HTML
+  const carouselHTML = `
+    <div class="carousel-container">
+      <div class="carousel-slide">
+        <img id="carousel-main-img" src="${images[0]}" alt="${project.title}">
+      </div>
+      <button class="carousel-prev" aria-label="Previous">‹</button>
+      <button class="carousel-next" aria-label="Next">›</button>
+      <div class="carousel-dots" id="carousel-dots"></div>
+    </div>
+  `;
+  imagesContainer.innerHTML = carouselHTML;
+
+  const mainImg = document.getElementById('carousel-main-img');
+  const prevBtn = imagesContainer.querySelector('.carousel-prev');
+  const nextBtn = imagesContainer.querySelector('.carousel-next');
+  const dotsContainer = imagesContainer.querySelector('#carousel-dots');
+
+  // Create dots
+  function createDots() {
+    dotsContainer.innerHTML = '';
+    images.forEach((_, idx) => {
+      const dot = document.createElement('span');
+      dot.classList.add('dot');
+      if (idx === currentIndex) dot.classList.add('active');
+      dot.addEventListener('click', (e) => {
+        e.stopPropagation();
+        currentIndex = idx;
+        updateCarousel();
+      });
+      dotsContainer.appendChild(dot);
+    });
+  }
+
+  function updateCarousel() {
+    mainImg.src = images[currentIndex];
+    // Update active dot
+    const dots = dotsContainer.querySelectorAll('.dot');
+    dots.forEach((dot, idx) => {
+      if (idx === currentIndex) dot.classList.add('active');
+      else dot.classList.remove('active');
+    });
+  }
+
+  // Event listeners for navigation
+  prevBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    updateCarousel();
+  });
+  nextBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    currentIndex = (currentIndex + 1) % images.length;
+    updateCarousel();
+  });
+
+  // LIGHTBOX: click on main image to expand
+  mainImg.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const lightbox = document.createElement('div');
+    lightbox.className = 'lightbox';
+    const expandedImg = document.createElement('img');
+    expandedImg.src = mainImg.src;
+    const closeBtn = document.createElement('div');
+    closeBtn.className = 'lightbox-close';
+    closeBtn.innerHTML = '✕';
+    closeBtn.addEventListener('click', () => lightbox.remove());
+    lightbox.appendChild(expandedImg);
+    lightbox.appendChild(closeBtn);
+    lightbox.addEventListener('click', (e2) => {
+      if (e2.target === lightbox) lightbox.remove();
+    });
+    document.body.appendChild(lightbox);
+  });
+
+  createDots();
   goTo('detail');
 }
-document.getElementById('DETAIL-BACK').addEventListener('click',()=>goTo(_detailBack));
 
-/* CLICK DELEGATION */
-document.addEventListener('click',e=>{
-  const el=e.target.closest('[data-goto]');
-  if(!el)return;
+// ------------------------------
+// GLOBAL CLICK DELEGATION
+// ------------------------------
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-goto]');
+  if (!el) return;
   e.stopPropagation();
-  const{goto:dest,name,sub,back,term}=el.dataset;
-  if(dest==='detail') openDetail(name,sub,back||_current);
-  else if(dest==='term'&&term){buildTermGrid(term);goTo('term');}
-  else if(dest==='menu') goTo('menu');
-  else if(dest==='mdef') goTo('mdef');
-  else if(dest==='portfolio') goTo('portfolio');
-  else if(dest==='tattoo') goTo('tattoo');
-  else if(dest==='cv') goTo('cv');
-  else if(dest==='contact') goTo('contact');
-  else if(dest==='texts') goTo('texts');
+
+  const { goto: dest, name, sub, back, term, index, context } = el.dataset;
+  if (dest === 'detail') {
+    if (index !== undefined && context) {
+      openDetail(parseInt(index), context, back || _current);
+    }
+  } else if (dest === 'term' && term) {
+    buildTermGrid(term);
+    goTo('term');
+  } else if (dest === 'menu') goTo('menu');
+  else if (dest === 'mdef') goTo('mdef');
+  else if (dest === 'portfolio') goTo('portfolio');
+  else if (dest === 'tattoo') goTo('tattoo');
+  else if (dest === 'cv') goTo('cv');
+  else if (dest === 'contact') goTo('contact');
+  else if (dest === 'texts') goTo('texts');
 });
 
-/* HOME */
-document.getElementById('S-HOME').addEventListener('click',()=>goTo('menu'));
+// ------------------------------
+// HOME & TOP NAVIGATION
+// ------------------------------
+document.getElementById('S-HOME').addEventListener('click', () => goTo('menu'));
 
-/* TOP NAV */
-document.getElementById('BTN-ABOUT').addEventListener('click',e=>{e.stopPropagation();openAbout();});
-document.getElementById('BTN-PORTFOLIO').addEventListener('click',e=>{e.stopPropagation();makeGrid(PORTFOLIO_PROJECTS,'PORTFOLIO-GRID','portfolio');goTo('portfolio');});
-document.getElementById('BTN-TATTOO').addEventListener('click',e=>{e.stopPropagation();makeGrid(TATTOO_PROJECTS,'TATTOO-GRID','tattoo');goTo('tattoo');});
-document.getElementById('BTN-MDEF').addEventListener('click',e=>{e.stopPropagation();goTo('mdef');});
-document.getElementById('BTN-TEXTS').addEventListener('click',e=>{e.stopPropagation();buildTexts();goTo('texts');});
-document.getElementById('SITENAME').addEventListener('click',e=>{e.stopPropagation();goTo('home');});
+document.getElementById('BTN-ABOUT').addEventListener('click', e => { e.stopPropagation(); openAbout(); });
+document.getElementById('BTN-PORTFOLIO').addEventListener('click', e => {
+  e.stopPropagation();
+  makeGrid(PORTFOLIO_PROJECTS, 'PORTFOLIO-GRID', 'portfolio');
+  goTo('portfolio');
+});
+document.getElementById('BTN-TATTOO').addEventListener('click', e => {
+  e.stopPropagation();
+  makeGrid(TATTOO_PROJECTS, 'TATTOO-GRID', 'tattoo');
+  goTo('tattoo');
+});
+document.getElementById('BTN-MDEF').addEventListener('click', e => { e.stopPropagation(); goTo('mdef'); });
+document.getElementById('BTN-TEXTS').addEventListener('click', e => { e.stopPropagation(); buildTexts(); goTo('texts'); });
+document.getElementById('SITENAME').addEventListener('click', e => { e.stopPropagation(); goTo('home'); });
+document.getElementById('DETAIL-BACK').addEventListener('click', () => goTo(_detailBack));
 
-/* ABOUT SIDEBAR */
-const aboutOvl=document.getElementById('ABOUT-OVL'),aboutDrawer=document.getElementById('ABOUT-DRAWER');
-function openAbout(){aboutOvl.classList.add('OPEN');aboutDrawer.classList.add('OPEN');}
-function closeAbout(){aboutOvl.classList.remove('OPEN');aboutDrawer.classList.remove('OPEN');}
-document.getElementById('ABOUT-CLOSE').addEventListener('click',closeAbout);
-aboutOvl.addEventListener('click',closeAbout);
-document.getElementById('ABOUT-TO-CONTACT').addEventListener('click',()=>{closeAbout();setTimeout(()=>goTo('contact'),200);});
-document.getElementById('ABOUT-TO-PORTFOLIO').addEventListener('click',()=>{closeAbout();makeGrid(PORTFOLIO_PROJECTS,'PORTFOLIO-GRID','portfolio');setTimeout(()=>goTo('portfolio'),200);});
-document.getElementById('ABOUT-TO-CV').addEventListener('click',()=>{closeAbout();setTimeout(()=>goTo('cv'),200);});
+// ------------------------------
+// ABOUT SIDEBAR
+// ------------------------------
+const aboutOvl = document.getElementById('ABOUT-OVL'), aboutDrawer = document.getElementById('ABOUT-DRAWER');
+function openAbout() { aboutOvl.classList.add('OPEN'); aboutDrawer.classList.add('OPEN'); }
+function closeAbout() { aboutOvl.classList.remove('OPEN'); aboutDrawer.classList.remove('OPEN'); }
+document.getElementById('ABOUT-CLOSE').addEventListener('click', closeAbout);
+aboutOvl.addEventListener('click', closeAbout);
+document.getElementById('ABOUT-TO-CONTACT').addEventListener('click', () => { closeAbout(); setTimeout(() => goTo('contact'), 200); });
+document.getElementById('ABOUT-TO-PORTFOLIO').addEventListener('click', () => { closeAbout(); makeGrid(PORTFOLIO_PROJECTS, 'PORTFOLIO-GRID', 'portfolio'); setTimeout(() => goTo('portfolio'), 200); });
+document.getElementById('ABOUT-TO-CV').addEventListener('click', () => { closeAbout(); setTimeout(() => goTo('cv'), 200); });
 
-/* DRAWING BOARD */
-const canvas=document.getElementById('DRAW-CANVAS');
-const ctx=canvas.getContext('2d');
-let brushSize=4, drawing=false, lastX=0, lastY=0;
+// ------------------------------
+// DRAWING BOARD (unchanged)
+// ------------------------------
+const canvas = document.getElementById('DRAW-CANVAS');
+const ctx = canvas.getContext('2d');
+let brushSize = 4, drawing = false, lastX = 0, lastY = 0;
 
-function resizeCanvas(){
-  const img=ctx.getImageData(0,0,canvas.width,canvas.height);
-  canvas.width=window.innerWidth;
-  canvas.height=window.innerHeight-52-28;
-  canvas.style.top='52px';
-  ctx.putImageData(img,0,0);
-  ctx.lineCap='round';ctx.lineJoin='round';
-  ctx.strokeStyle='rgba(255,10,202,0.85)';ctx.lineWidth=brushSize;
+function resizeCanvas() {
+  const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight - 52 - 28;
+  canvas.style.top = '52px';
+  ctx.putImageData(img, 0, 0);
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.strokeStyle = 'rgba(255,10,202,0.85)'; ctx.lineWidth = brushSize;
 }
-window.addEventListener('resize',resizeCanvas);
+window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
-function getPos(e){
-  const r=canvas.getBoundingClientRect();
-  if(e.touches)return{x:e.touches[0].clientX-r.left,y:e.touches[0].clientY-r.top};
-  return{x:e.clientX-r.left,y:e.clientY-r.top};
+function getPos(e) {
+  const r = canvas.getBoundingClientRect();
+  if (e.touches) return { x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top };
+  return { x: e.clientX - r.left, y: e.clientY - r.top };
 }
-canvas.addEventListener('mousedown',e=>{
-  if(e.target.closest('button,a,#TOPBAR,#DRAW-TOOLBAR'))return;
-  drawing=true;const{x,y}=getPos(e);lastX=x;lastY=y;
-  ctx.beginPath();ctx.arc(x,y,brushSize/2,0,Math.PI*2);
-  ctx.fillStyle='rgba(255,10,202,0.85)';ctx.fill();
+canvas.addEventListener('mousedown', e => {
+  if (e.target.closest('button,a,#TOPBAR,#DRAW-TOOLBAR')) return;
+  drawing = true; const { x, y } = getPos(e); lastX = x; lastY = y;
+  ctx.beginPath(); ctx.arc(x, y, brushSize / 2, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(255,10,202,0.85)'; ctx.fill();
 });
-canvas.addEventListener('mousemove',e=>{
-  if(!drawing)return;const{x,y}=getPos(e);
-  ctx.beginPath();ctx.moveTo(lastX,lastY);ctx.lineTo(x,y);
-  ctx.lineWidth=brushSize;ctx.strokeStyle='rgba(255,10,202,0.85)';
-  ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke();lastX=x;lastY=y;
+canvas.addEventListener('mousemove', e => {
+  if (!drawing) return; const { x, y } = getPos(e);
+  ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(x, y);
+  ctx.lineWidth = brushSize; ctx.strokeStyle = 'rgba(255,10,202,0.85)';
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.stroke(); lastX = x; lastY = y;
 });
-canvas.addEventListener('mouseup',()=>{drawing=false;});
-canvas.addEventListener('mouseleave',()=>{drawing=false;});
-canvas.addEventListener('touchstart',e=>{e.preventDefault();drawing=true;const{x,y}=getPos(e);lastX=x;lastY=y;},{passive:false});
-canvas.addEventListener('touchmove',e=>{
-  e.preventDefault();if(!drawing)return;const{x,y}=getPos(e);
-  ctx.beginPath();ctx.moveTo(lastX,lastY);ctx.lineTo(x,y);
-  ctx.lineWidth=brushSize;ctx.strokeStyle='rgba(255,10,202,0.85)';
-  ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke();lastX=x;lastY=y;
-},{passive:false});
-canvas.addEventListener('touchend',()=>{drawing=false;});
+canvas.addEventListener('mouseup', () => { drawing = false; });
+canvas.addEventListener('mouseleave', () => { drawing = false; });
+canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing = true; const { x, y } = getPos(e); lastX = x; lastY = y; }, { passive: false });
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault(); if (!drawing) return; const { x, y } = getPos(e);
+  ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(x, y);
+  ctx.lineWidth = brushSize; ctx.strokeStyle = 'rgba(255,10,202,0.85)';
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.stroke(); lastX = x; lastY = y;
+}, { passive: false });
+canvas.addEventListener('touchend', () => { drawing = false; });
 
-const brushBtns=document.querySelectorAll('.brush-btn');
-const brushPreview=document.getElementById('BRUSH-PREVIEW');
-brushBtns.forEach(btn=>{
-  btn.addEventListener('click',e=>{
+const brushBtns = document.querySelectorAll('.brush-btn');
+const brushPreview = document.getElementById('BRUSH-PREVIEW');
+brushBtns.forEach(btn => {
+  btn.addEventListener('click', e => {
     e.stopPropagation();
-    brushBtns.forEach(b=>b.classList.remove('ON'));btn.classList.add('ON');
-    brushSize=parseInt(btn.dataset.size);
-    brushPreview.style.width=brushSize+'px';brushPreview.style.height=brushSize+'px';
-    document.documentElement.style.setProperty('--brush-cur',Math.max(brushSize,6)+'px');
+    brushBtns.forEach(b => b.classList.remove('ON')); btn.classList.add('ON');
+    brushSize = parseInt(btn.dataset.size);
+    brushPreview.style.width = brushSize + 'px'; brushPreview.style.height = brushSize + 'px';
+    document.documentElement.style.setProperty('--brush-cur', Math.max(brushSize, 6) + 'px');
   });
 });
-document.getElementById('BTN-CLEAR').addEventListener('click',e=>{e.stopPropagation();ctx.clearRect(0,0,canvas.width,canvas.height);});
+document.getElementById('BTN-CLEAR').addEventListener('click', e => { e.stopPropagation(); ctx.clearRect(0, 0, canvas.width, canvas.height); });
 
-/* CUSTOM CURSOR */
-const CUR=document.getElementById('CUR'),CRING=document.getElementById('CRING'),CVIEW=document.getElementById('CVIEW');
-let mx=innerWidth/2,my=innerHeight/2,rx=mx,ry=my,tR=200,tG=192,tB=180,cR=tR,cG=tG,cB=tB;
-const lp=(a,b,t)=>a+(b-a)*t;
-document.addEventListener('mousemove',e=>{
-  mx=e.clientX;my=e.clientY;
-  const xr=e.clientX/innerWidth;
-  tR=Math.round(200-xr*18);tG=Math.round(192-xr*8);tB=Math.round(180+xr*28);
-  CUR.style.left=e.clientX+'px';CUR.style.top=e.clientY+'px';
-  CVIEW.style.left=e.clientX+'px';CVIEW.style.top=(e.clientY+28)+'px';
+// ------------------------------
+// CUSTOM CURSOR (unchanged)
+// ------------------------------
+const CUR = document.getElementById('CUR'), CRING = document.getElementById('CRING'), CVIEW = document.getElementById('CVIEW');
+let mx = innerWidth / 2, my = innerHeight / 2, rx = mx, ry = my, tR = 200, tG = 192, tB = 180, cR = tR, cG = tG, cB = tB;
+const lp = (a, b, t) => a + (b - a) * t;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  const xr = e.clientX / innerWidth;
+  tR = Math.round(200 - xr * 18); tG = Math.round(192 - xr * 8); tB = Math.round(180 + xr * 28);
+  CUR.style.left = e.clientX + 'px'; CUR.style.top = e.clientY + 'px';
+  CVIEW.style.left = e.clientX + 'px'; CVIEW.style.top = (e.clientY + 28) + 'px';
 });
-(function curTick(){
-  rx=lp(rx,mx,.09);ry=lp(ry,my,.09);
-  CRING.style.left=rx+'px';CRING.style.top=ry+'px';
-  cR=lp(cR,tR,.07);cG=lp(cG,tG,.07);cB=lp(cB,tB,.07);
-  const r=Math.round(cR),g=Math.round(cG),b=Math.round(cB);
-  document.documentElement.style.setProperty('--cr',r);
-  document.documentElement.style.setProperty('--cg',g);
-  document.documentElement.style.setProperty('--cb',b);
-  CUR.style.background=`rgba(${r},${g},${b},1)`;
-  CUR.style.boxShadow=`0 0 6px 3px rgba(${r},${g},${b},.28),0 0 16px 7px rgba(${r},${g},${b},.08)`;
-  CRING.style.borderColor=`rgba(${r},${g},${b},.36)`;
+(function curTick() {
+  rx = lp(rx, mx, .09); ry = lp(ry, my, .09);
+  CRING.style.left = rx + 'px'; CRING.style.top = ry + 'px';
+  cR = lp(cR, tR, .07); cG = lp(cG, tG, .07); cB = lp(cB, tB, .07);
+  const r = Math.round(cR), g = Math.round(cG), b = Math.round(cB);
+  document.documentElement.style.setProperty('--cr', r);
+  document.documentElement.style.setProperty('--cg', g);
+  document.documentElement.style.setProperty('--cb', b);
+  CUR.style.background = `rgba(${r},${g},${b},1)`;
+  CUR.style.boxShadow = `0 0 6px 3px rgba(${r},${g},${b},.28),0 0 16px 7px rgba(${r},${g},${b},.08)`;
+  CRING.style.borderColor = `rgba(${r},${g},${b},.36)`;
   requestAnimationFrame(curTick);
 })();
-document.addEventListener('mouseover',e=>{
-  const h=e.target.closest('button,a,.grid-card,.ct-item,.term-btn,.back-btn,.np,.adr-btn,.brush-btn,.cv-dl,.text-entry');
-  document.body.classList.toggle('cHOVER',!!h && _current!=='menu');
-  if(_current!=='menu')CVIEW.style.opacity=h?'1':'0';
-  else CVIEW.style.opacity='0';
+document.addEventListener('mouseover', e => {
+  const h = e.target.closest('button,a,.grid-card,.ct-item,.term-btn,.back-btn,.np,.adr-btn,.brush-btn,.cv-dl,.text-entry');
+  document.body.classList.toggle('cHOVER', !!h && _current !== 'menu');
+  if (_current !== 'menu') CVIEW.style.opacity = h ? '1' : '0';
+  else CVIEW.style.opacity = '0';
 });
 
-/* INIT */
+// ------------------------------
+// INIT
+// ------------------------------
 document.body.classList.add('on-home');
-makeGrid(PORTFOLIO_PROJECTS,'PORTFOLIO-GRID','portfolio');
-makeGrid(TATTOO_PROJECTS,'TATTOO-GRID','tattoo');
+makeGrid(PORTFOLIO_PROJECTS, 'PORTFOLIO-GRID', 'portfolio');
+makeGrid(TATTOO_PROJECTS, 'TATTOO-GRID', 'tattoo');
 </script>
 </body>
 </html>
